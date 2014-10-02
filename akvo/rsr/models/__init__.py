@@ -106,31 +106,31 @@ __all__ = [
 ]
 
 # signals!
-user_activated.connect(user_activated_callback)
+# user_activated.connect(user_activated_callback)
 
-post_save.connect(create_organisation_account, sender=Organisation)
+# post_save.connect(create_organisation_account, sender=Organisation)
 
-post_save.connect(create_publishing_status, sender=Project)
-post_save.connect(create_payment_gateway_selector, sender=Project)
+# post_save.connect(create_publishing_status, sender=Project)
+# post_save.connect(create_payment_gateway_selector, sender=Project)
 
-if getattr(settings, "DONATION_NOTIFICATION_EMAILS", True):
-    post_save.connect(donation_completed, sender=Invoice)
+# if getattr(settings, "DONATION_NOTIFICATION_EMAILS", True):
+#     post_save.connect(donation_completed, sender=Invoice)
 
-post_save.connect(change_name_of_file_on_create, sender=Organisation)
-post_save.connect(change_name_of_file_on_create, sender=Project)
-post_save.connect(change_name_of_file_on_create, sender=ProjectUpdate)
-post_save.connect(act_on_log_entry, sender=LogEntry)
+# post_save.connect(change_name_of_file_on_create, sender=Organisation)
+# post_save.connect(change_name_of_file_on_create, sender=Project)
+# post_save.connect(change_name_of_file_on_create, sender=ProjectUpdate)
+# post_save.connect(act_on_log_entry, sender=LogEntry)
 
-pre_save.connect(change_name_of_file_on_change, sender=Organisation)
-pre_save.connect(change_name_of_file_on_change, sender=Project)
-pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
+# pre_save.connect(change_name_of_file_on_change, sender=Organisation)
+# pre_save.connect(change_name_of_file_on_change, sender=Project)
+# pre_save.connect(change_name_of_file_on_change, sender=ProjectUpdate)
 
-post_save.connect(update_project_budget, sender=BudgetItem)
-post_save.connect(update_project_funding, sender=Invoice)
-post_save.connect(update_project_funding, sender=Partnership)
+# post_save.connect(update_project_budget, sender=BudgetItem)
+# post_save.connect(update_project_funding, sender=Invoice)
+# post_save.connect(update_project_funding, sender=Partnership)
 
-post_delete.connect(update_project_budget, sender=BudgetItem)
-post_delete.connect(update_project_funding, sender=Invoice)
-post_delete.connect(update_project_funding, sender=Partnership)
+# post_delete.connect(update_project_budget, sender=BudgetItem)
+# post_delete.connect(update_project_funding, sender=Invoice)
+# post_delete.connect(update_project_funding, sender=Partnership)
 
-post_save.connect(create_api_key, sender=User)
+# post_save.connect(create_api_key, sender=User)
