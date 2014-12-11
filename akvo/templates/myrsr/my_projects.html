@@ -36,7 +36,11 @@
               <a href="{% url 'project-main' project.id %}">View</a>
               {% has_perm 'rsr.change_project' user project as can_edit_project %}
               {% if can_edit_project %}
+              {% if project.aidstream_id %}
+              <a href="{{aidstream_url}}activity/view-activity-info/?activity_id={{project.aidstream_id}}/">Edit</a>
+              {% else %}
               <a href="/admin/rsr/project/{{project.pk}}/">Edit</a>
+              {% endif %}
               <a href="/admin/rsr/publishingstatus/?project={{project.pk}}">
                 {% if project.is_published %}
                     Unpublish

@@ -188,6 +188,7 @@ class Project(TimestampsMixin, models.Model):
 
     # extra IATI fields
     iati_activity_id = ValidXMLCharField(_(u'IATI activity ID'), max_length=100, blank=True, db_index=True,)
+    aidstream_id = ValidXMLCharField(_(u'Aidstream ID'), max_length=100, blank=True, db_index=True,)
     hierarchy = models.PositiveIntegerField(
         _(u'hierarchy'), null=True, blank=True, max_length=1, choices=HIERARCHY_OPTIONS
     )

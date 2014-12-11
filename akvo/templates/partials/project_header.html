@@ -1,10 +1,21 @@
-{% load i18n maps %}
+{% load i18n maps rules %}
 
 <header>
     <div class="container">
         <div class="row">
             <div class="col-sm-8 col-xs-8">
-                <h1>{{project.title}}</h1>
+                {% has_perm 'rsr.change_project' user project as can_edit_project %}
+                <h1>{{project.title}}
+                    {% if can_edit_project %}
+                    <span class="small">
+                        {% if project.aidstream_id %}
+                        <a href="{{aidstream_url}}activity/view-activity-info/?activity_id={{project.aidstream_id}}/">Edit</a>
+                        {% else %}
+                        <a href="/admin/rsr/project/{{project.pk}}/">Edit</a>
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                </h1>
                 <p>{{project.subtitle}}</p>
                 <p class="small"><span class="glyphicon glyphicon-globe"></span> {{project.primary_location.country}}, {{project.primary_location.country.continent}} &nbsp; <a href="#" onclick="maptoggle()" class="map-toggle">Show map +</a></p>
             </div>

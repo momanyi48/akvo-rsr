@@ -11,6 +11,7 @@ import json
 from ..forms import PasswordForm, ProfileForm, UserOrganisationForm
 from ...utils import pagination
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
@@ -72,6 +73,7 @@ def my_projects(request):
     page, paginator, page_range = pagination(page, projects, 10)
 
     context = {
+        'aidstream_url': settings.AIDSTREAM_ROOT,
         'page': page,
         'paginator': paginator,
         'page_range': page_range,

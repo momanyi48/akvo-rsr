@@ -13,6 +13,7 @@ from ..filters import remove_empty_querydict_items, ProjectFilter
 from ..models import Invoice, Project, ProjectUpdate
 from ...utils import pagination
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
@@ -185,6 +186,7 @@ def main(request, project_id):
 
     context = {
         'accordion_data': json.dumps(accordion_data),
+        'aidstream_url': settings.AIDSTREAM_ROOT,
         'carousel_data': json.dumps(carousel_data),
         'project': project,
         'timeline_data': json.dumps(timeline_data),
