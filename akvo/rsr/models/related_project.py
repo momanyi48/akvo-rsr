@@ -10,6 +10,10 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 from ..iati.codelists import codelists_v105 as codelists
 
+from .project import Project
+
+from .models_utils import default_aidstream_cleanup
+
 
 class RelatedProject(models.Model):
     project = models.ForeignKey('Project', related_name='related_projects')
@@ -20,6 +24,17 @@ class RelatedProject(models.Model):
         u'(E.g. select the \'Parent\' relation when the project is a parent of the related project).')
     )
 
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        try:
+            data['related_project'] = Project.objects.get(iati_identifier=data['related_project'])
+        except:
+            return None
+        return data
 
     class Meta:
         app_label = 'rsr'

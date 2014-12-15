@@ -10,6 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..fields import ValidXMLCharField
 
+from .models_utils import default_aidstream_cleanup
+
 
 class Partnership(models.Model):
     FIELD_PARTNER = u'field'
@@ -56,6 +58,29 @@ class Partnership(models.Model):
         )
     )
     related_activity_id = ValidXMLCharField(_(u'related IATI activity ID'), max_length=50, blank=True)
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        from .organisation import Organisation
+        iati_2_orgaination_role = {
+            '1': 'funding',
+            '2': 'support',
+            '3': 'support',
+            '4': 'field',
+        }
+        data = default_aidstream_cleanup(cls, data, project)
+        if data['organisation']:
+           try:
+               data['organisation'] = Organisation.objects.get(pk=data['organisation'])
+           except:
+               return None
+        data['partner_type'] = iati_2_orgaination_role[data['partner_type']]
+        if data['iati_url'] is None:
+            data['iati_url'] = ''
+        return data
 
     class Meta:
         app_label = 'rsr'

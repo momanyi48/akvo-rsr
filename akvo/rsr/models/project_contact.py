@@ -11,6 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 from ..iati.codelists import codelists_v104 as codelists
 
+from .models_utils import default_aidstream_cleanup
+
 
 class ProjectContact(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='contacts')
@@ -24,8 +26,19 @@ class ProjectContact(models.Model):
     state = ValidXMLCharField(_(u'state'), blank=True, max_length=100, help_text=_('(100 characters)'))
     country = models.ForeignKey('Country', blank=True, null=True, verbose_name=u'country', related_name='contacts')
     organisation = ValidXMLCharField(_(u'organisation'), blank=True, max_length=100, help_text=_('(100 characters)'))
+    # TODO: fix length of telephone field, phone numbers can be looooong...
     telephone = ValidXMLCharField(_(u'telephone'), blank=True, max_length=15)
     website = models.URLField(_(u'website'), blank=True)
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        #TODO: fix length of telephone field, phone numbers can be looooong...
+        data['telephone'] = data['telephone'][:15]
+        return data
 
     class Meta:
         app_label = 'rsr'

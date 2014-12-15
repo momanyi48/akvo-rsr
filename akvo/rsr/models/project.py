@@ -31,7 +31,7 @@ from .budget_item import BudgetItem, BudgetItemLabel
 from .country import Country
 from .invoice import Invoice
 from .link import Link
-from .models_utils import OrganisationsQuerySetManager, QuerySetManager
+from .models_utils import OrganisationsQuerySetManager, QuerySetManager, default_aidstream_cleanup
 from .organisation import Organisation
 from .partnership import Partnership
 from .publishing_status import PublishingStatus
@@ -694,6 +694,19 @@ class Project(TimestampsMixin, models.Model):
     def siblings(self):
         return (Project.objects.filter(related_projects__related_project=self, related_projects__relation=3) |
                 Project.objects.filter(related_to_projects__project=self, related_to_projects__relation=3)).distinct()
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data, project=None):
+        """
+        helper method to "fix" data coming form aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        # TODO: set the real sync owner org
+        data['sync_owner'] = Organisation.objects.get(pk=42)
+        # TODO: import images
+        data['current_image'] = ''
+        return data
+
 
     class Meta:
         app_label = 'rsr'

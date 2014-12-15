@@ -13,6 +13,8 @@ from ..fields import ValidXMLCharField
 from ..iati.codelists import codelists_v104 as codelists
 from ..iso3166 import ISO_3166_COUNTRIES, CONTINENTS, COUNTRY_CONTINENTS
 
+from .models_utils import default_aidstream_cleanup
+
 
 class Country(models.Model):
     name = ValidXMLCharField(_(u'country name'), max_length=50, unique=True, db_index=True)
@@ -47,6 +49,14 @@ class RecipientCountry(models.Model):
         validators=[MaxValueValidator(100), MinValueValidator(0)]
     )
     text = ValidXMLCharField(_(u'country description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        return data
 
     class Meta:
         app_label = 'rsr'

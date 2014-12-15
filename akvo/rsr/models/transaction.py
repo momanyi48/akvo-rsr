@@ -11,6 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 from ..iati.codelists import codelists_v104 as codelists
 
+from .models_utils import default_aidstream_cleanup
+
 
 class Transaction(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='transactions')
@@ -66,6 +68,18 @@ class Transaction(models.Model):
     receiver_organisation_activity = ValidXMLCharField(
         _(u'receiver organisation activity id'), blank=True, max_length=50
     )
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        for name, val in data.items():
+            if val is None:
+                if name in ['aid_type', 'disbursement_channel', 'finance_type', 'flow_type', 'tied_status', ]:
+                    data[name] = ''
+        return data
 
     def __unicode__(self):
         return self.value

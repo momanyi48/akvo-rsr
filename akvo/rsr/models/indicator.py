@@ -11,6 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 from ..iati.codelists import codelists_v104 as codelists
 
+from .models_utils import default_aidstream_cleanup
+
 
 class Indicator(models.Model):
     result = models.ForeignKey('Result', verbose_name=_(u'result'), related_name='indicators')
@@ -28,6 +30,14 @@ class Indicator(models.Model):
     baseline_comment = ValidXMLCharField(
         _(u'baseline comment'), blank=True, max_length=255, help_text=_(u'(max 255 characters)')
     )
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        return data
 
     def __unicode__(self):
         return self.title
@@ -50,6 +60,14 @@ class IndicatorPeriod(models.Model):
     actual_comment = ValidXMLCharField(
         _(u'actual comment'), blank=True, max_length=255, help_text=_(u'(max 255 characters)')
     )
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        return data
 
     def __unicode__(self):
         return self.indicator.__unicode__()

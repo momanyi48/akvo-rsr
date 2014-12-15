@@ -11,6 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 from ..iati.codelists import codelists_v104 as codelists
 
+from .models_utils import default_aidstream_cleanup
+
 
 class Link(models.Model):
     LINK_AKVOPEDIA = 'A'
@@ -40,6 +42,14 @@ class Link(models.Model):
 
     def show_link(self):
         return u'<a href="%s">%s</a>' % (self.url, self.caption,)
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        return data
 
     class Meta:
         app_label = 'rsr'

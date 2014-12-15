@@ -12,6 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 from ..iati.codelists import codelists_v104 as codelists
 
+from .models_utils import default_aidstream_cleanup
+
 
 class BudgetItemLabel(models.Model):
     TOTAL_BUDGET_LABEL_ID = 14
@@ -60,6 +62,15 @@ class BudgetItem(models.Model):
             return u"other" if self.other_extra is None else self.other_extra.strip()
         else:
             return self.__unicode__()
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        data['label'] = BudgetItemLabel.objects.get(pk=data['label'])
+        return data
 
     class Meta:
         app_label = 'rsr'

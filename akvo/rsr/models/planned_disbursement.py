@@ -11,6 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 from ..iati.codelists import codelists_v104 as codelists
 
+from .models_utils import default_aidstream_cleanup
+
 
 class PlannedDisbursement(models.Model):
     project = models.ForeignKey('Project', verbose_name=_(u'project'), related_name='planned_disbursements')
@@ -20,6 +22,14 @@ class PlannedDisbursement(models.Model):
     updated = models.DateField(_(u'updated'), null=True, blank=True)
     period_start = models.DateField(_(u'period start'), null=True, blank=True)
     period_end = models.DateField(_(u'period end'), null=True, blank=True)
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        return data
 
     def __unicode__(self):
         return self.value

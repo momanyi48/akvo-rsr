@@ -12,6 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 from ..fields import ValidXMLCharField
 from ..iati.codelists import codelists_v104 as codelists
 
+from .models_utils import default_aidstream_cleanup
+
 
 class RecipientRegion(models.Model):
     project = models.ForeignKey('Project', verbose_name=u'project', related_name='recipient_regions')
@@ -22,6 +24,14 @@ class RecipientRegion(models.Model):
     percentage = models.DecimalField(_(u'percentage'), blank=True, null=True, max_digits=4, decimal_places=1,
                                      validators=[MaxValueValidator(100), MinValueValidator(0)])
     text = ValidXMLCharField(_(u'region description'), blank=True, max_length=50, help_text=_(u'(max 50 characters)'))
+
+    @classmethod
+    def aidstream_data_cleaning(cls, data,  project=None):
+        """
+        helper method to "fix" data coming from aidstream
+        """
+        data = default_aidstream_cleanup(cls, data, project)
+        return data
 
     class Meta:
         app_label = 'rsr'
